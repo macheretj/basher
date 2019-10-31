@@ -2,6 +2,12 @@
 
 from jinja2 import Template, Environment, FileSystemLoader
 
+
+def init():
+
+    global results_dir
+    results_dir = "results/"
+
 def main():
 
     print("Hello")
@@ -31,7 +37,9 @@ def tpl_render(params):
 
     # Save the results
 
-    with open("results/"+params['scriptname'], "w") as fh:
+    with open(results_dir+params['scriptname'], "w") as fh:
         fh.write(output)
 
+
+init()
 main()
