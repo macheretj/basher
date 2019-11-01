@@ -1,26 +1,51 @@
 #!/usr/bin/python
 
+import os
+import click
+from pyfiglet import Figlet
+
 from jinja2 import Template, Environment, FileSystemLoader
 
 
-def init():
+custom_fig = Figlet(font='slant')
+print(custom_fig.renderText('<< Basher >>'))
 
-    global results_dir
-    results_dir = "results/"
+print("Please input basic script creation information. Avoid using spaces in the script name.")
+@click.command()
+@click.option('--scriptname', prompt='Script name',help='The name of the script')
+@click.option('--name', prompt='Your name',help='The person to greet.')
+@click.option('--description', prompt='Script short descrtiption:',help='The script short description')
+@click.option('--createdate', prompt='Creation date:',help='The script creation date.')
+@click.option('--version', prompt='Version', help='Initial version.')
 
-def main():
+
+def init(version,name,description,createdate,scriptname):
+
+
+                                         
+
+    global build_dir
+    build_dir = "build/"
+
+    if not os.path.exists(build_dir):
+        os.makedirs(build_dir)
+
+    params = {
+        "name": name,
+        "version": version,
+        "description": description,
+        "createdate": createdate,
+        "scriptname": scriptname
+    }
+
+    basher(params)
+
+def basher(params):
 
     print("Hello")
 
     
-    params = {
-        "name": "Jonas Macheret",
-        "version": "v1.0.0",
-        "description": "tralala",
-        "author": "Jojo",
-        "createdate": "21.09.2019",
-        "scriptname": "Skeletor"
-    }
+  
 
     tpl_render(params)
 
@@ -37,9 +62,10 @@ def tpl_render(params):
 
     # Save the results
 
-    with open(results_dir+params['scriptname'], "w") as fh:
+    with open(build_dir+params['scriptname'], "w") as fh:
         fh.write(output)
 
 
-init()
-main()
+
+if __name__ == '__main__':
+    init()
