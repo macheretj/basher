@@ -1,11 +1,10 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import os
+import json
 import click
 from pyfiglet import Figlet
-
 from jinja2 import Template, Environment, FileSystemLoader
-
 
 custom_fig = Figlet(font='slant')
 print(custom_fig.renderText('<< Basher >>'))
@@ -13,16 +12,20 @@ print(custom_fig.renderText('<< Basher >>'))
 print("Please input basic script creation information. Avoid using spaces in the script name.")
 @click.command()
 @click.option('--scriptname', prompt='Script name',help='The name of the script')
-@click.option('--name', prompt='Your name',help='The person to greet.')
 @click.option('--description', prompt='Script short descrtiption:',help='The script short description')
-@click.option('--createdate', prompt='Creation date:',help='The script creation date.')
-@click.option('--version', prompt='Version', help='Initial version.')
+@click.option('--language',type=click.Choice(['bash','perl','python'], case_sensitive=False),prompt='Language')
 
+def build_user_input_dict(scriptname,description,language):
 
-def init(version,name,description,createdate,scriptname):
+    user_input_dict = {
+        "description": description,
+        "scriptname": scriptname,
+        "language": language,
+    }
 
+    return(user_input_dict)
 
-                                         
+def init():                              
 
     global build_dir
     build_dir = "build/"
@@ -30,42 +33,34 @@ def init(version,name,description,createdate,scriptname):
     if not os.path.exists(build_dir):
         os.makedirs(build_dir)
 
-    params = {
-        "name": name,
-        "version": version,
-        "description": description,
-        "createdate": createdate,
-        "scriptname": scriptname
-    }
-
-    basher(params)
-
-def basher(params):
+def basher(user_input_dict):
 
     print("Hello")
 
     
-  
+    with open('templates/common_data.json', 'r') as f:
+        common_data_dict = json.load(f)
 
-    tpl_render(params)
+
+    tpl_render(user_input_dict,common_data_dict)
 
 
-def tpl_render(params):
+def tpl_render(user_input_dict,common_data_dict):
 
     file_loader = FileSystemLoader('templates')
     env = Environment(loader=file_loader)
 
     template = env.get_template('script.tpl')
 
-    output = template.render(par=params)
+    output = template.render(user_input=user_input_dict,common_data=common_data_dict)
     print(output)
 
     # Save the results
 
-    with open(build_dir+params['scriptname'], "w") as fh:
+    with open(build_dir+user_input_dict['scriptname'], "w") as fh:
         fh.write(output)
 
 
-
-if __name__ == '__main__':
-    init()
+init()
+user_input_dict = build_user_input_dict(scriptname,description,language)
+basher(user_input_dict)

@@ -1,0 +1,13 @@
+{
+    "company": {
+        "name": "ACME Corporation",
+        "address": "ROAD 66",
+        "city": "Gotham city",
+        "zipcode": "666"
+    },
+    "author": {
+        "name": "John Doe",
+        "email": "john.doe@gmail.com",
+        "jobtitle": "Linux System engineer"
+    }
+}
